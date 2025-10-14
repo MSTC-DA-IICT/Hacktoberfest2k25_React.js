@@ -93,10 +93,7 @@ const Login = () => {
 
     // TODO: Call login from auth context
     try {
-      // await login(formData);
-      // toast.success('Login successful!');
-      // navigate('/');
-
+      
       // Placeholder
       toast.error('Login not implemented yet');
     } catch (error) {
