@@ -65,9 +65,7 @@ const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
 
   // TODO: Implement mobile menu toggle
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
+  
 
   // TODO: Implement logout handler
   const handleLogout = () => {
@@ -144,69 +142,7 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {/* TODO: Implement mobile menu with animation */}
-        {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t">
-            <div className="flex flex-col space-y-4">
-              <Link to="/" className="text-gray-700 hover:text-primary-600" onClick={() => setMobileMenuOpen(false)}>
-                Home
-              </Link>
-              <Link
-                to="/questions"
-                className="text-gray-700 hover:text-primary-600"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Questions
-              </Link>
-              {isAuthenticated ? (
-                <>
-                  <Link
-                    to="/submit"
-                    className="text-gray-700 hover:text-primary-600"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Submit Question
-                  </Link>
-                  {user?.role === 'admin' && (
-                    <Link
-                      to="/admin"
-                      className="text-gray-700 hover:text-primary-600"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Admin
-                    </Link>
-                  )}
-                  <Link
-                    to="/profile"
-                    className="text-gray-700 hover:text-primary-600"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Profile
-                  </Link>
-                  <button onClick={handleLogout} className="text-left text-red-600 hover:text-red-700">
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/login"
-                    className="text-gray-700 hover:text-primary-600"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    to="/register"
-                    className="text-primary-600 hover:text-primary-700 font-semibold"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Register
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
-        )}
+        
       </div>
     </nav>
   );
