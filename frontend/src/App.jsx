@@ -33,25 +33,16 @@
 
 import { Routes, Route } from 'react-router-dom';
 // TODO: Import AuthProvider
-// import { AuthProvider } from './context/AuthContext';
+
 
 // TODO: Import layout components
-// import Navbar from './components/Navbar';
-// import Footer from './components/Footer';
+
 
 // TODO: Import page components
-// import Home from './pages/Home';
-// import Questions from './pages/Questions';
-// import QuestionDetails from './pages/QuestionDetails';
-// import AddQuestion from './pages/AddQuestion';
-// import Login from './pages/Login';
-// import Register from './pages/Register';
-// import Profile from './pages/Profile';
-// import Admin from './pages/Admin';
-// import NotFound from './pages/NotFound';
+
 
 // TODO: Import PrivateRoute wrapper for protected routes
-// import PrivateRoute from './components/PrivateRoute';
+
 
 /**
  * TODO: SETUP APPLICATION ROUTING
