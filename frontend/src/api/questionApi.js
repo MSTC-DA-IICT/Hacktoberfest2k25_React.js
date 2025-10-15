@@ -187,7 +187,15 @@ export const searchQuestions = async (keyword) => {
  */
 
 export const getCategories = async () => {
-  // TODO: Implement get categories
-  console.log('Get categories API not implemented yet');
-  throw new Error('Get categories API not implemented');
+  const data = await api.get('/categories');
+
+  const norm = (a) => (Array.isArray(a) ? a : []);
+  return {
+    success: data?.success ?? true,
+    topics:    norm(data?.topics),
+    companies: norm(data?.companies),
+    roles:     norm(data?.roles),
+  };
 };
+
+

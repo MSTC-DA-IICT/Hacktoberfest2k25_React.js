@@ -27,6 +27,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { getCategories } from '../api/questionApi';
 // TODO: Import API functions
 // import { getAllQuestions, getCategories, searchQuestions } from '../api/questionApi';
 // import QuestionCard from '../components/QuestionCard';
@@ -80,15 +81,26 @@ const Questions = () => {
     topics: [],
     roles: [],
   });
+  
+  const keyOf = (prefix, v) =>
+    `${prefix}-${String(v).toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '')}`;
+
+  const fetchCategories = async () => {
+    try {
+      const { success, companies, topics, roles } = await getCategories();
+      if (success) setCategories({ companies, topics, roles });
+    } catch (e) {
+      setCategories({ companies: [], topics: [], roles: [] });
+    }
+  };
 
   // TODO: Fetch questions on mount and when filters change
   useEffect(() => {
     // fetchQuestions();
   }, [filters]);
 
-  // TODO: Fetch categories for filters
   useEffect(() => {
-    // fetchCategories();
+    fetchCategories();
   }, []);
 
   return (
@@ -114,22 +126,44 @@ const Questions = () => {
       {/* Filters and Sort */}
       <div className="mb-6 flex flex-wrap gap-4">
         {/* TODO: Implement filter dropdowns */}
+        <label htmlFor="company" className="sr-only">Filter by company</label>
         <select
+          id="company"
           className="px-4 py-2 border rounded-lg"
           value={filters.company}
           onChange={(e) => setFilters({ ...filters, company: e.target.value })}
         >
           <option value="">All Companies</option>
-          {/* TODO: Map categories.companies */}
+          {categories.companies.map((c) => (
+            <option key={keyOf('company', c)} value={c}>{c}</option>
+          ))}
         </select>
-
+        
+        <label htmlFor="topic" className="sr-only">Filter by topic</label>
         <select
+          id="topic"
           className="px-4 py-2 border rounded-lg"
           value={filters.topic}
           onChange={(e) => setFilters({ ...filters, topic: e.target.value })}
         >
           <option value="">All Topics</option>
-          {/* TODO: Map categories.topics */}
+          {categories.topics.map((t) => (
+            <option key={keyOf('topic', t)} value={t}>{t}</option>
+          ))}
+        </select>
+
+        <label htmlFor="role" className="sr-only">Filter by role</label>
+        <select
+          id="role"
+          className="px-4 py-2 border rounded-lg"
+          value={filters.role}
+          onChange={(e) => setFilters({ ...filters, role: e.target.value })}
+        >
+          <option value="">All Roles</option>
+          {categories.roles.map((r) => (
+            <option key={keyOf('role', r)} value={r}>{r}</option>
+          ))}
+
         </select>
 
         <select
