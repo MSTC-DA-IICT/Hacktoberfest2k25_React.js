@@ -64,10 +64,12 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
 
-  // TODO: Implement mobile menu toggle
- 
+  // Toggle mobile menu function
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
 
-  // TODO: Implement logout handler
+  // Logout handler
   const handleLogout = () => {
     logout();
     setMobileMenuOpen(false);
@@ -132,16 +134,102 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          {/* <button className="md:hidden text-gray-700" onClick={toggleMobileMenu}> */}
-            {/* TODO: Add hamburger icon or use SVG */}
-            {/* <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button> */}
+          <button 
+            className="md:hidden text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded p-2" 
+            onClick={toggleMobileMenu}
+            aria-label="Toggle mobile menu"
+            aria-expanded={mobileMenuOpen}
+          >
+            {mobileMenuOpen ? (
+              // Close icon (X)
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              // Hamburger icon
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
         </div>
 
         {/* Mobile Menu */}
-        {/* TODO: Implement mobile menu with animation */}
+        <div 
+          className={`md:hidden transition-all duration-300 ease-in-out overflow-hidden ${
+            mobileMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
+          }`}
+        >
+          <div className="px-2 pt-2 pb-4 space-y-2 bg-gray-50 rounded-lg shadow-inner">
+            <Link 
+              to="/" 
+              className="block px-3 py-2 rounded-md text-gray-700 hover:bg-primary-100 hover:text-primary-600 transition"
+              onClick={toggleMobileMenu}
+            >
+              Home
+            </Link>
+            <Link 
+              to="/questions" 
+              className="block px-3 py-2 rounded-md text-gray-700 hover:bg-primary-100 hover:text-primary-600 transition"
+              onClick={toggleMobileMenu}
+            >
+              Questions
+            </Link>
+
+            {isAuthenticated && (
+              <>
+                <Link 
+                  to="/submit" 
+                  className="block px-3 py-2 rounded-md text-gray-700 hover:bg-primary-100 hover:text-primary-600 transition"
+                  onClick={toggleMobileMenu}
+                >
+                  Submit Question
+                </Link>
+                {user?.role === 'admin' && (
+                  <Link 
+                    to="/admin" 
+                    className="block px-3 py-2 rounded-md text-gray-700 hover:bg-primary-100 hover:text-primary-600 transition"
+                    onClick={toggleMobileMenu}
+                  >
+                    Admin
+                  </Link>
+                )}
+                <Link 
+                  to="/profile" 
+                  className="block px-3 py-2 rounded-md text-gray-700 hover:bg-primary-100 hover:text-primary-600 transition"
+                  onClick={toggleMobileMenu}
+                >
+                  {user?.name || 'Profile'}
+                </Link>
+                <button 
+                  onClick={handleLogout} 
+                  className="w-full text-left px-3 py-2 rounded-md text-gray-700 hover:bg-primary-100 hover:text-primary-600 transition"
+                >
+                  Logout
+                </button>
+              </>
+            )}
+
+            {!isAuthenticated && (
+              <>
+                <Link 
+                  to="/login" 
+                  className="block px-3 py-2 rounded-md text-gray-700 hover:bg-primary-100 hover:text-primary-600 transition"
+                  onClick={toggleMobileMenu}
+                >
+                  Login
+                </Link>
+                <Link 
+                  to="/register" 
+                  className="block px-3 py-2 rounded-md bg-primary-600 text-white hover:bg-primary-700 transition text-center"
+                  onClick={toggleMobileMenu}
+                >
+                  Register
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
         
       </div>
     </nav>
