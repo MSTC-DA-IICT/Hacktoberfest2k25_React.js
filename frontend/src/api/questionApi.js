@@ -59,9 +59,34 @@ import api from './axios';
  */
 
 export const getAllQuestions = async (filters = {}) => {
-  // TODO: Implement get all questions with filters
-  console.log('Get all questions API not implemented yet');
-  throw new Error('Get all questions API not implemented');
+  // Simulate API call with mock data
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      let questions = [...MOCK_QUESTIONS];
+      
+      // Apply sorting
+      if (filters.sort === 'oldest') {
+        questions.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+      } else if (filters.sort === 'upvotes') {
+        questions.sort((a, b) => b.upvotes - a.upvotes);
+      } else { // latest (default)
+        questions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      }
+      
+      // Apply filters
+      if (filters.company) {
+        questions = questions.filter(q => q.company === filters.company);
+      }
+      if (filters.topic) {
+        questions = questions.filter(q => q.topic === filters.topic);
+      }
+      if (filters.difficulty) {
+        questions = questions.filter(q => q.difficulty === filters.difficulty);
+      }
+      
+      resolve({ questions });
+    }, 300);
+  });
 };
 
 /**
@@ -166,10 +191,53 @@ export const getQuestionUpvotes = async (id) => {
  * Searches in questionText, company, and topic fields
  */
 
+
+// Mock data for demo purposes
+const MOCK_QUESTIONS = [
+  {
+    _id: '1',
+    questionText: 'What is React?',
+    company: 'Facebook',
+    topic: 'Frontend',
+    role: 'Developer',
+    difficulty: 'Easy',
+    upvotes: 10,
+    createdAt: '2025-10-01T12:00:00Z',
+  },
+  {
+    _id: '2',
+    questionText: 'Explain useEffect hook.',
+    company: 'Google',
+    topic: 'Frontend',
+    role: 'Engineer',
+    difficulty: 'Medium',
+    upvotes: 7,
+    createdAt: '2025-09-28T12:00:00Z',
+  },
+  {
+    _id: '3',
+    questionText: 'How does Node.js handle async?',
+    company: 'Amazon',
+    topic: 'Backend',
+    role: 'Backend Developer',
+    difficulty: 'Hard',
+    upvotes: 15,
+    createdAt: '2025-09-20T12:00:00Z',
+  },
+];
+
 export const searchQuestions = async (keyword) => {
-  // TODO: Implement search
-  console.log('Search questions API not implemented yet');
-  throw new Error('Search questions API not implemented');
+  // Simulate API search
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const filtered = MOCK_QUESTIONS.filter(q =>
+        q.questionText.toLowerCase().includes(keyword.toLowerCase()) ||
+        q.company.toLowerCase().includes(keyword.toLowerCase()) ||
+        q.topic.toLowerCase().includes(keyword.toLowerCase())
+      );
+      resolve({ questions: filtered });
+    }, 400);
+  });
 };
 
 /**
@@ -187,7 +255,14 @@ export const searchQuestions = async (keyword) => {
  */
 
 export const getCategories = async () => {
-  // TODO: Implement get categories
-  console.log('Get categories API not implemented yet');
-  throw new Error('Get categories API not implemented');
+  // Simulate API call with mock data
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        companies: ['Facebook', 'Google', 'Amazon', 'Microsoft', 'Apple'],
+        topics: ['Frontend', 'Backend', 'Database', 'DevOps', 'System Design'],
+        roles: ['Developer', 'Engineer', 'Backend Developer', 'Frontend Developer', 'Full Stack']
+      });
+    }, 200);
+  });
 };
