@@ -25,6 +25,7 @@
  */
 
 import api from './axios';
+import { mockGetAllQuestions, mockGetCategories, mockSearchQuestions } from './mockData';
 
 /**
  * TODO: IMPLEMENT GET ALL QUESTIONS
@@ -59,9 +60,23 @@ import api from './axios';
  */
 
 export const getAllQuestions = async (filters = {}) => {
-  // TODO: Implement get all questions with filters
-  console.log('Get all questions API not implemented yet');
-  throw new Error('Get all questions API not implemented');
+  try {
+    const params = new URLSearchParams();
+    
+    // Add all filter parameters to the URL
+    Object.keys(filters).forEach(key => {
+      if (filters[key]) {
+        params.append(key, filters[key]);
+      }
+    });
+    
+    const response = await api.get(`/questions?${params.toString()}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching questions from API, falling back to mock data:', error);
+    // Fall back to mock data when backend is not available
+    return mockGetAllQuestions(filters);
+  }
 };
 
 /**
@@ -167,9 +182,14 @@ export const getQuestionUpvotes = async (id) => {
  */
 
 export const searchQuestions = async (keyword) => {
-  // TODO: Implement search
-  console.log('Search questions API not implemented yet');
-  throw new Error('Search questions API not implemented');
+  try {
+    const response = await api.get(`/questions/search?q=${encodeURIComponent(keyword)}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error searching questions from API, falling back to mock data:', error);
+    // Fall back to mock data when backend is not available
+    return mockSearchQuestions(keyword);
+  }
 };
 
 /**
@@ -187,7 +207,12 @@ export const searchQuestions = async (keyword) => {
  */
 
 export const getCategories = async () => {
-  // TODO: Implement get categories
-  console.log('Get categories API not implemented yet');
-  throw new Error('Get categories API not implemented');
+  try {
+    const response = await api.get('/categories');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching categories from API, falling back to mock data:', error);
+    // Fall back to mock data when backend is not available
+    return mockGetCategories();
+  }
 };

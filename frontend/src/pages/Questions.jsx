@@ -27,10 +27,10 @@
  * - Pagination
  */
 
-import { useState, useEffect } from 'react';
-// TODO: Import API functions
+import { useState, useEffect, useCallback } from 'react';
+// Import API functions
 import { getAllQuestions, getCategories, searchQuestions } from '../api/questionApi';
-// import QuestionCard from '../components/QuestionCard';
+import QuestionCard from '../components/QuestionCard';
 // import Loading from '../components/Loading';
 
 /**
@@ -85,10 +85,25 @@ const Questions = () => {
     roles: [],
   });
 
-  // TODO: Fetch questions on mount and when filters change
-  useEffect(() => {
-    // fetchQuestions();
+  // Fetch questions function
+  const fetchQuestions = useCallback(async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const response = await getAllQuestions(filters);
+      setQuestions(response.questions || []);
+    } catch (err) {
+      setError('Failed to load questions. Please try again later.');
+      console.error('Error fetching questions:', err);
+    } finally {
+      setLoading(false);
+    }
   }, [filters]);
+
+  // Fetch questions on mount and when filters change
+  useEffect(() => {
+    fetchQuestions();
+  }, [fetchQuestions]);
 
   //Fetch categories function for filters
   const fetchCategories = async () => {
@@ -112,7 +127,36 @@ const Questions = () => {
     }
   }
 
-  // TODO: Fetch categories for filters
+  // Handle search functionality
+  const handleSearch = useCallback(async () => {
+    if (searchQuery.trim()) {
+      setLoading(true);
+      setError('');
+      try {
+        const response = await searchQuestions(searchQuery);
+        setQuestions(response.questions || []);
+      } catch (err) {
+        setError('Failed to search questions. Please try again later.');
+        console.error('Error searching questions:', err);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      // If search is empty, fetch all questions with current filters
+      fetchQuestions();
+    }
+  }, [searchQuery, fetchQuestions]);
+
+  // Debounce search queries
+  useEffect(() => {
+    const delayedSearch = setTimeout(() => {
+      handleSearch();
+    }, 500); // Wait 500ms after user stops typing
+
+    return () => clearTimeout(delayedSearch);
+  }, [searchQuery, handleSearch]);
+
+  // Fetch categories for filters
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -146,7 +190,11 @@ const Questions = () => {
           onChange={(e) => setFilters({ ...filters, company: e.target.value })}
         >
           <option value="">All Companies</option>
-          {/* TODO: Map categories.companies */}
+          {categories.companies.map((company) => (
+            <option key={company} value={company}>
+              {company}
+            </option>
+          ))}
         </select>
 
         <select
@@ -155,7 +203,24 @@ const Questions = () => {
           onChange={(e) => setFilters({ ...filters, topic: e.target.value })}
         >
           <option value="">All Topics</option>
-          {/* TODO: Map categories.topics */}
+          {categories.topics.map((topic) => (
+            <option key={topic} value={topic}>
+              {topic}
+            </option>
+          ))}
+        </select>
+
+        <select
+          className="px-4 py-2 border rounded-lg"
+          value={filters.role}
+          onChange={(e) => setFilters({ ...filters, role: e.target.value })}
+        >
+          <option value="">All Roles</option>
+          {categories.roles.map((role) => (
+            <option key={role} value={role}>
+              {role}
+            </option>
+          ))}
         </select>
 
         <select
@@ -180,10 +245,15 @@ const Questions = () => {
         </select>
       </div>
 
+      {/* Error Message */}
+      {error && (
+        <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+          {error}
+        </div>
+      )}
+
       {/* Questions Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* TODO: Map questions and render QuestionCard */}
-        {/* Placeholder */}
         {loading ? (
           <div className="col-span-full text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
@@ -191,13 +261,20 @@ const Questions = () => {
           </div>
         ) : questions.length === 0 ? (
           <div className="col-span-full text-center py-12">
-            <p className="text-gray-600">No questions found. Try adjusting your filters.</p>
+            <p className="text-gray-600">No questions found. Try adjusting your filters or search terms.</p>
           </div>
         ) : (
-          // Map questions here
-          <div className="col-span-full text-center py-12 text-gray-500">
-            <p>Question cards will appear here once API is implemented</p>
-          </div>
+          questions.map((question) => (
+            <QuestionCard
+              key={question._id}
+              question={question}
+              onUpvote={(questionId) => {
+                // TODO: Implement upvote functionality
+                console.log('Upvote question:', questionId);
+              }}
+              showActions={true}
+            />
+          ))
         )}
       </div>
 
